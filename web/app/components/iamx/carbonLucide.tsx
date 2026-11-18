@@ -1,0 +1,30 @@
+import * as C from "@carbon/icons-react";
+import type { ComponentType } from "react";
+
+type P = { className?: string; size?: number | string; strokeWidth?: number; style?: React.CSSProperties; "aria-hidden"?: boolean };
+const wrap = (I: ComponentType<any>) => {
+  const W = ({ strokeWidth: _s, size, ...rest }: P) => <I size={typeof size === "number" ? size : 16} {...rest} />;
+  return W;
+};
+export const AppWindow = wrap(C.Application);
+export const ArrowRight = wrap(C.ArrowRight);
+export const Box = wrap(C.Box);
+export const Check = wrap(C.Checkmark);
+export const ChevronDown = wrap(C.ChevronDown);
+export const ChevronLeft = wrap(C.ChevronLeft);
+export const ChevronRight = wrap(C.ChevronRight);
+export const Eye = wrap(C.View);
+export const EyeOff = wrap(C.ViewOff);
+export const FileSpreadsheet = wrap(C.DataTable);
+export const Folder = wrap(C.Folder);
+export const Globe = wrap(C.Earth);
+export const GripVertical = wrap(C.Draggable);
+export const LayoutGrid = wrap(C.Grid);
+export const Lock = wrap(C.Locked);
+export const Mail = wrap(C.Email);
+export const Search = wrap(C.Search);
+export const Settings = wrap(C.Settings);
+export const Shield = wrap(C.Security);
+export const Trash2 = wrap(C.TrashCan);
+export const User = wrap(C.User);
+export const X = wrap(C.Close);

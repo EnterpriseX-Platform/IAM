@@ -1,0 +1,551 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* IBM Carbon g10 — ตาม MaintainX design system (claude.ai/artifact/MdVkjkJNVQmneNDbbxoqP5) */
+    --background: 0 0% 96%;
+    --foreground: 0 0% 9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
+    --primary: 220 99% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 88%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 32%;
+    --accent: 0 0% 91%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 357 76% 49%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 88%;
+    --input: 0 0% 55%;
+    --ring: 220 99% 53%;
+    --radius: 0px;
+    
+    /* Custom minimal vars */
+    --surface: 0 0% 100%;
+    --surface-elevated: 0 0% 100%;
+    --divider: 0 0% 88%;
+    --hover: 0 0% 91%;
+
+    /* IAMX reference tokens — flat hex, no HSL wrapping */
+    --iamx-bg: #ffffff;
+    --iamx-surface: #f4f4f4;
+    --iamx-bg-hover: #e8e8e8;
+    --iamx-bg-active: #e0e0e0;
+    --iamx-sidebar: #ffffff;
+    --iamx-sidebar-hover: #e8e8e8;
+    --iamx-sidebar-active: #e0e0e0;
+    --iamx-fg: #161616;
+    --iamx-fg-muted: #525252;
+    --iamx-border: #e0e0e0;
+    --iamx-border-strong: #8d8d8d;
+    --iamx-accent: #0f62fe;
+    --iamx-accent-soft: #d0e2ff;
+    --iamx-field: #f4f4f4;
+    --iamx-row-h: 36px;
+  }
+
+  :root[data-density="comfortable"] {
+    --iamx-row-h: 44px;
+  }
+
+  /* Drawer push-mode: main column shrinks instead of being overlaid */
+  body[data-drawer-push] [data-main-column] {
+    padding-right: var(--drawer-push-w, 0px);
+    transition: padding 200ms ease-out;
+  }
+
+  .dark {
+    --background: 240 6% 6%;
+    --foreground: 0 0% 98%;
+    --card: 240 6% 8%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 6% 8%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 6% 10%;
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 65%;
+    --accent: 240 4% 16%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 4% 20%;
+    --input: 240 4% 20%;
+    --ring: 240 5% 65%;
+    
+    --surface: 240 6% 8%;
+    --surface-elevated: 240 6% 12%;
+    --divider: 240 4% 18%;
+    --hover: 240 4% 14%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+  
+  /* Minimal focus styles */
+  /* 13/11/69: Carbon focus — เส้น 2px น้ำเงินด้านใน ชั้นเดียว (เดิม ring + offset ซ้อนกันเป็นสองกรอบ) */
+  :focus-visible {
+    outline: 2px solid #0f62fe;
+    outline-offset: -2px;
+  }
+  
+  /* Selection */
+  ::selection {
+    @apply bg-blue-100 text-foreground;
+  }
+}
+
+@layer components {
+  /* Card styles */
+  .card {
+    @apply rounded-xl border bg-card text-card-foreground shadow-none;
+  }
+  
+  .card-elevated {
+    @apply rounded-xl border bg-card text-card-foreground shadow-none;
+  }
+  
+  /* Input styles */
+  .input-minimal {
+    @apply h-10 w-full rounded-lg border border-input px-3 py-2 text-sm text-foreground transition-colors placeholder:text-muted-foreground focus:border-foreground focus:ring-0 focus:outline-none;
+  }
+  
+  /* Button styles */
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50;
+  }
+  
+  .btn-primary {
+    @apply btn bg-primary text-primary-foreground hover:bg-[#0353e9] h-10 px-4;
+  }
+  
+  .btn-secondary {
+    @apply btn bg-secondary text-secondary-foreground hover:bg-secondary/80 h-10 px-4;
+  }
+  
+  .btn-ghost {
+    @apply btn hover:bg-secondary h-10 px-4;
+  }
+  
+  .btn-destructive {
+    @apply btn inline-flex items-center justify-center gap-2 border border-destructive/30 bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground h-10 px-4 rounded-lg text-sm font-medium transition-all whitespace-nowrap;
+  }
+  
+  /* Custom button styles for IAMX */
+  .btn-save {
+    @apply btn inline-flex items-center justify-center gap-2 bg-[#0f62fe] text-white hover:bg-[#0f62fe]/90 h-10 px-4 rounded-lg text-sm font-medium transition-all whitespace-nowrap;
+  }
+  
+  .btn-cancel {
+    @apply btn inline-flex items-center justify-center gap-2 bg-layer text-blue-700 border border-blue-700 hover:bg-[#0f62fe]/5 h-10 px-4 rounded-lg text-sm font-medium transition-all whitespace-nowrap;
+  }
+
+  /* Table styles */
+  .table-minimal {
+    @apply w-full text-sm;
+  }
+  
+  .table-minimal thead {
+    @apply border-b;
+  }
+  
+  .table-minimal th {
+    @apply h-12 px-4 text-left align-middle font-medium text-muted-foreground;
+  }
+  
+  .table-minimal td {
+    @apply p-4 align-middle border-b border-border/50;
+  }
+  
+  .table-minimal tr:hover {
+    @apply bg-hover;
+  }
+  
+  /* Badge styles */
+  .badge {
+    @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors;
+  }
+  
+  .badge-default {
+    @apply badge bg-secondary text-secondary-foreground border-transparent;
+  }
+  
+  .badge-active {
+    @apply badge bg-foreground text-background border-transparent;
+  }
+  
+  /* Divider */
+  .divider {
+    @apply h-px w-full bg-border;
+  }
+  
+  /* Scrollbar minimal */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-muted-foreground/20;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/30;
+  }
+}
+
+@layer utilities {
+  /* Animation utilities */
+  .animate-in {
+    animation: animate-in 0.2s ease-out;
+  }
+  
+  .animate-out {
+    animation: animate-out 0.2s ease-in;
+  }
+  
+  @keyframes animate-in {
+    from {
+      opacity: 0;
+      transform: translateY(-2px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes animate-out {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-2px);
+    }
+  }
+  
+  /* Text utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Focus ring utility */
+  .ring-focus {
+    @apply focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none;
+  }
+}
+
+/* SweetAlert2 button overrides - outside @layer so they win over Swal's injected CSS */
+.swal2-popup .swal2-actions {
+  justify-content: flex-end !important;
+  gap: 8px !important;
+}
+.swal2-popup .swal2-actions .swal2-confirm.swal-btn-confirm {
+  @apply inline-flex items-center justify-center bg-[#0f62fe] text-white hover:bg-[#0f62fe]/90 h-10 px-6 rounded-lg text-sm font-medium transition-all;
+  box-shadow: none !important;
+}
+.swal2-popup .swal2-actions .swal2-cancel.swal-btn-cancel {
+  @apply inline-flex items-center justify-center bg-layer text-blue-700 border border-blue-700 hover:bg-[#0f62fe]/5 h-10 px-6 rounded-lg text-sm font-medium transition-all;
+  box-shadow: none !important;
+}
+.swal2-popup .swal2-actions .swal2-confirm.swal-btn-confirm:focus,
+.swal2-popup .swal2-actions .swal2-cancel.swal-btn-cancel:focus {
+  box-shadow: none !important;
+}
+
+@keyframes importBarFill {
+  from { width: 20%; }
+  to   { width: 85%; }
+}
+
+/* 13/11/69: หน้าที่ฝังในลิ้นชัก (เช่น โดเมน ในโครงสร้างเมนู) — ไม่แสดงหัวหน้าซ้ำกับหัวลิ้นชัก */
+.iamx-embedded h1 { display: none; }
+
+/* 13/11/69: หน้าที่ฝังเป็นส่วนหนึ่งของหน้าอื่น (ผู้ดูแล IAMX ในตั้งค่าระบบ) — หัวเป็นหัวส่วน */
+.iamx-section h1 { font-size: 16px; font-weight: 500; }
+
+/* 13/11/69: หน้า login รองรับสว่าง/มืด — ตามเครื่อง หรือเลือกเองผ่าน data-theme บน <html> */
+.iamx-login {
+  --l-bg: #f4f4f4; --l-card: #ffffff; --l-field: #f4f4f4; --l-line: #8d8d8d;
+  --l-fg: #161616; --l-fg-2: #525252; --l-blue: #0f62fe; --l-blue-h: #0050e6; --l-mark: #161616;
+  --l-info: #edf5ff; --l-err-bg: #fff1f1; --l-err: #da1e28;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .iamx-login {
+    --l-bg: #161616; --l-card: #262626; --l-field: #393939; --l-line: #6f6f6f;
+    --l-fg: #f4f4f4; --l-fg-2: #c6c6c6; --l-blue: #0f62fe; --l-blue-h: #0353e9; --l-mark: #f4f4f4;
+    --l-info: #001d6c; --l-err-bg: #520408; --l-err: #ff8389;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] .iamx-login {
+  --l-bg: #161616; --l-card: #262626; --l-field: #393939; --l-line: #6f6f6f;
+  --l-fg: #f4f4f4; --l-fg-2: #c6c6c6; --l-blue: #0f62fe; --l-blue-h: #0353e9; --l-mark: #f4f4f4;
+  --l-info: #001d6c; --l-err-bg: #520408; --l-err: #ff8389;
+  color-scheme: dark;
+}
+
+/* 13/11/69  "ปรับ dark light ทั้งระบบ": สีชุด Tailwind (gray/blue/green/red/amber + ตระกูลที่ผูกไว้) เป็นตัวแปร
+   สว่าง = Carbon g10 · มืด = Carbon g100 · เลือกเองผ่าน data-theme บน <html> (เก็บใน localStorage iamx.theme) หรือตามเครื่อง */
+:root {
+    --c-gray-50: 244 244 244;
+    --c-gray-100: 232 232 232;
+    --c-gray-200: 224 224 224;
+    --c-gray-300: 198 198 198;
+    --c-gray-400: 168 168 168;
+    --c-gray-500: 141 141 141;
+    --c-gray-600: 111 111 111;
+    --c-gray-700: 82 82 82;
+    --c-gray-800: 57 57 57;
+    --c-gray-900: 22 22 22;
+    --c-blue-50: 237 245 255;
+    --c-blue-100: 208 226 255;
+    --c-blue-200: 166 200 255;
+    --c-blue-300: 120 169 255;
+    --c-blue-400: 69 137 255;
+    --c-blue-500: 15 98 254;
+    --c-blue-600: 15 98 254;
+    --c-blue-700: 3 83 233;
+    --c-blue-800: 0 45 156;
+    --c-blue-900: 0 29 108;
+    --c-green-50: 222 251 230;
+    --c-green-100: 167 240 186;
+    --c-green-200: 111 220 140;
+    --c-green-300: 66 190 101;
+    --c-green-400: 36 161 72;
+    --c-green-500: 36 161 72;
+    --c-green-600: 25 128 56;
+    --c-green-700: 14 96 39;
+    --c-green-800: 4 67 23;
+    --c-green-900: 2 45 13;
+    --c-red-50: 255 241 241;
+    --c-red-100: 255 215 217;
+    --c-red-200: 255 179 184;
+    --c-red-300: 255 131 137;
+    --c-red-400: 250 77 86;
+    --c-red-500: 218 30 40;
+    --c-red-600: 218 30 40;
+    --c-red-700: 162 25 31;
+    --c-red-800: 117 14 19;
+    --c-red-900: 82 4 8;
+    --c-amber-50: 255 242 232;
+    --c-amber-100: 255 216 189;
+    --c-amber-200: 255 183 132;
+    --c-amber-300: 255 131 43;
+    --c-amber-400: 235 98 0;
+    --c-amber-500: 241 194 27;
+    --c-amber-600: 138 56 0;
+    --c-amber-700: 138 56 0;
+    --c-amber-800: 94 41 0;
+    --c-amber-900: 62 26 0;
+    --c-layer: 255 255 255;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --c-gray-50: 38 38 38;
+    --c-gray-100: 51 51 51;
+    --c-gray-200: 57 57 57;
+    --c-gray-300: 82 82 82;
+    --c-gray-400: 111 111 111;
+    --c-gray-500: 141 141 141;
+    --c-gray-600: 168 168 168;
+    --c-gray-700: 198 198 198;
+    --c-gray-800: 224 224 224;
+    --c-gray-900: 244 244 244;
+    --c-blue-50: 0 17 65;
+    --c-blue-100: 0 29 108;
+    --c-blue-200: 0 45 156;
+    --c-blue-300: 0 67 206;
+    --c-blue-400: 69 137 255;
+    --c-blue-500: 15 98 254;
+    --c-blue-600: 15 98 254;
+    --c-blue-700: 69 137 255;
+    --c-blue-800: 166 200 255;
+    --c-blue-900: 208 226 255;
+    --c-green-50: 7 25 8;
+    --c-green-100: 4 67 23;
+    --c-green-200: 14 96 39;
+    --c-green-300: 25 128 56;
+    --c-green-400: 36 161 72;
+    --c-green-500: 36 161 72;
+    --c-green-600: 66 190 101;
+    --c-green-700: 111 220 140;
+    --c-green-800: 167 240 186;
+    --c-green-900: 222 251 230;
+    --c-red-50: 45 7 9;
+    --c-red-100: 82 4 8;
+    --c-red-200: 117 14 19;
+    --c-red-300: 162 25 31;
+    --c-red-400: 250 77 86;
+    --c-red-500: 218 30 40;
+    --c-red-600: 218 30 40;
+    --c-red-700: 255 131 137;
+    --c-red-800: 255 179 184;
+    --c-red-900: 255 215 217;
+    --c-amber-50: 43 20 0;
+    --c-amber-100: 94 41 0;
+    --c-amber-200: 138 56 0;
+    --c-amber-300: 186 78 0;
+    --c-amber-400: 235 98 0;
+    --c-amber-500: 241 194 27;
+    --c-amber-600: 255 131 43;
+    --c-amber-700: 255 183 132;
+    --c-amber-800: 255 216 189;
+    --c-amber-900: 255 242 232;
+    --c-layer: 38 38 38;
+    --background: 0 0% 9%;
+    --foreground: 0 0% 96%;
+    --card: 0 0% 15%;
+    --card-foreground: 0 0% 96%;
+    --popover: 0 0% 15%;
+    --popover-foreground: 0 0% 96%;
+    --secondary: 0 0% 22%;
+    --secondary-foreground: 0 0% 96%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 78%;
+    --accent: 0 0% 20%;
+    --accent-foreground: 0 0% 96%;
+    --border: 0 0% 22%;
+    --input: 0 0% 44%;
+    --surface: 0 0% 15%;
+    --surface-elevated: 0 0% 15%;
+    --divider: 0 0% 22%;
+    --hover: 0 0% 20%;
+    --iamx-bg: #262626;
+    --iamx-surface: #161616;
+    --iamx-bg-hover: #333333;
+    --iamx-bg-active: #393939;
+    --iamx-sidebar: #262626;
+    --iamx-sidebar-hover: #333333;
+    --iamx-sidebar-active: #393939;
+    --iamx-fg: #f4f4f4;
+    --iamx-fg-muted: #c6c6c6;
+    --iamx-border: #393939;
+    --iamx-border-strong: #6f6f6f;
+    --iamx-accent: #4589ff;
+    --iamx-accent-soft: #001d6c;
+    --iamx-field: #393939;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+    --c-gray-50: 38 38 38;
+    --c-gray-100: 51 51 51;
+    --c-gray-200: 57 57 57;
+    --c-gray-300: 82 82 82;
+    --c-gray-400: 111 111 111;
+    --c-gray-500: 141 141 141;
+    --c-gray-600: 168 168 168;
+    --c-gray-700: 198 198 198;
+    --c-gray-800: 224 224 224;
+    --c-gray-900: 244 244 244;
+    --c-blue-50: 0 17 65;
+    --c-blue-100: 0 29 108;
+    --c-blue-200: 0 45 156;
+    --c-blue-300: 0 67 206;
+    --c-blue-400: 69 137 255;
+    --c-blue-500: 15 98 254;
+    --c-blue-600: 15 98 254;
+    --c-blue-700: 69 137 255;
+    --c-blue-800: 166 200 255;
+    --c-blue-900: 208 226 255;
+    --c-green-50: 7 25 8;
+    --c-green-100: 4 67 23;
+    --c-green-200: 14 96 39;
+    --c-green-300: 25 128 56;
+    --c-green-400: 36 161 72;
+    --c-green-500: 36 161 72;
+    --c-green-600: 66 190 101;
+    --c-green-700: 111 220 140;
+    --c-green-800: 167 240 186;
+    --c-green-900: 222 251 230;
+    --c-red-50: 45 7 9;
+    --c-red-100: 82 4 8;
+    --c-red-200: 117 14 19;
+    --c-red-300: 162 25 31;
+    --c-red-400: 250 77 86;
+    --c-red-500: 218 30 40;
+    --c-red-600: 218 30 40;
+    --c-red-700: 255 131 137;
+    --c-red-800: 255 179 184;
+    --c-red-900: 255 215 217;
+    --c-amber-50: 43 20 0;
+    --c-amber-100: 94 41 0;
+    --c-amber-200: 138 56 0;
+    --c-amber-300: 186 78 0;
+    --c-amber-400: 235 98 0;
+    --c-amber-500: 241 194 27;
+    --c-amber-600: 255 131 43;
+    --c-amber-700: 255 183 132;
+    --c-amber-800: 255 216 189;
+    --c-amber-900: 255 242 232;
+    --c-layer: 38 38 38;
+    --background: 0 0% 9%;
+    --foreground: 0 0% 96%;
+    --card: 0 0% 15%;
+    --card-foreground: 0 0% 96%;
+    --popover: 0 0% 15%;
+    --popover-foreground: 0 0% 96%;
+    --secondary: 0 0% 22%;
+    --secondary-foreground: 0 0% 96%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 78%;
+    --accent: 0 0% 20%;
+    --accent-foreground: 0 0% 96%;
+    --border: 0 0% 22%;
+    --input: 0 0% 44%;
+    --surface: 0 0% 15%;
+    --surface-elevated: 0 0% 15%;
+    --divider: 0 0% 22%;
+    --hover: 0 0% 20%;
+    --iamx-bg: #262626;
+    --iamx-surface: #161616;
+    --iamx-bg-hover: #333333;
+    --iamx-bg-active: #393939;
+    --iamx-sidebar: #262626;
+    --iamx-sidebar-hover: #333333;
+    --iamx-sidebar-active: #393939;
+    --iamx-fg: #f4f4f4;
+    --iamx-fg-muted: #c6c6c6;
+    --iamx-border: #393939;
+    --iamx-border-strong: #6f6f6f;
+    --iamx-accent: #4589ff;
+    --iamx-accent-soft: #001d6c;
+    --iamx-field: #393939;
+    color-scheme: dark;
+}
+
+/* 13/11/69: กล่องยืนยัน (SweetAlert) ตามธีม */
+.swal2-popup { background: var(--iamx-bg) !important; color: var(--iamx-fg) !important; }
+.swal2-popup .swal2-title, .swal2-popup .swal2-html-container { color: var(--iamx-fg) !important; }
+.swal2-container.swal2-backdrop-show { background: rgba(22, 22, 22, 0.5) !important; }

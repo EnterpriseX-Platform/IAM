@@ -1,0 +1,22 @@
+.env
+.env.local
+.env.*.local
+node_modules/
+dist/
+build/
+.next/
+out/
+.DS_Store
+*.log
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Go build artifacts
+api/main
+api/*.exe
+*.exe
+*.dll
+*.so
+*.dylib

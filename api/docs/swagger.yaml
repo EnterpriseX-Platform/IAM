@@ -1,0 +1,279 @@
+basePath: /iamx/api
+definitions:
+  models.HealthResponse:
+    properties:
+      database:
+        type: string
+      status:
+        type: string
+      time:
+        type: string
+    type: object
+host: localhost:8081
+info:
+  contact: {}
+  description: |-
+    Identity & Access Management — admin + user-portal API.
+    The API surface is organized by audience:
+    /iamx/api/admin/*  — admin SPA (Keycloak admin role or internal JWT)
+    /iamx/api/me/*     — user portal (Keycloak bearer; data of the caller)
+    /iamx/api/system/* — ops & webhooks (IP allowlist or service token)
+    Several legacy prefixes are still served as aliases (/directory/*,
+    /public/me/*, /oracle/*, /cache/*, /internal/*) — they will retire
+    in a separate sunset PR. See docs/api-restructure-proposal.md.
+  title: IAMX API
+  version: "1.0"
+paths:
+  /admin/agencies/ministries:
+    get:
+      description: Read-only — sources from external Oracle schema APP.M_AGC.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{data:[...]} — array of ministry rows'
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Oracle unavailable or query failure
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List ministries
+      tags:
+      - Admin · Agencies
+  /admin/domains:
+    get:
+      description: Returns every active domain, ordered by id. Inactive rows are filtered
+        out at the SQL level.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{data:[...]} — array of DomainResponse'
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Oracle unavailable or query failure
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List domains
+      tags:
+      - Admin · Catalog
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Domain payload — code and name are required, description optional,
+          is_active 1/0
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            code:
+              type: string
+            description:
+              type: string
+            is_active:
+              type: integer
+            name:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: '{id, message}'
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Body parse error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Oracle error (often unique-constraint on code)
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a domain
+      tags:
+      - Admin · Catalog
+  /admin/domains/{id}:
+    delete:
+      parameters:
+      - description: Domain id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{message}'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Missing id
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Oracle error (FK violation etc.)
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a domain
+      tags:
+      - Admin · Catalog
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Domain id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated domain payload
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            code:
+              type: string
+            description:
+              type: string
+            is_active:
+              type: integer
+            name:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{message}'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Missing id or body parse error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Oracle error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a domain
+      tags:
+      - Admin · Catalog
+  /admin/roles:
+    get:
+      description: Returns every role row, regardless of is_active. Use /admin/roles/active
+        for the live set only.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{data:[...]} — array of RoleResponse'
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Oracle unavailable or query failure
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List roles
+      tags:
+      - Admin · RBAC
+  /health:
+    get:
+      description: Returns ok + database state. Used by K8s liveness probes.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.HealthResponse'
+      summary: Health probe
+      tags:
+      - System
+  /me/menu:
+    get:
+      description: 'Returns the applications the caller is permitted to access. Auth:
+        Keycloak Bearer.'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: menu tree
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Missing or invalid token
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Token valid but REF_USER_ID not provisioned
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: menuService failure
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: My menu
+      tags:
+      - Me
+  /system/health:
+    get:
+      description: Returns ok + database state. Used by K8s liveness probes.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.HealthResponse'
+      summary: Health probe
+      tags:
+      - System
+securityDefinitions:
+  BearerAuth:
+    description: Keycloak access_token, prefixed with "Bearer ".
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

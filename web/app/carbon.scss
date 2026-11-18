@@ -1,0 +1,20 @@
+// 16/11/69: คอมโพเนนต์ทั้งระบบมาจาก @carbon/react
+// ธีม g10 (สว่าง) / g100 (มืด) ตาม data-theme บน <html> · ไม่มีค่า = ตามเครื่อง
+@use '@carbon/react/scss/config' with ($css--font-face: false, $css--reset: false);
+@use '@carbon/react/scss/themes';
+@use '@carbon/react/scss/theme' with ($theme: themes.$g10);
+@use '@carbon/react';
+
+:root[data-theme='dark'] { @include theme.theme(themes.$g100); color-scheme: dark; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) { @include theme.theme(themes.$g100); color-scheme: dark; }
+}
+
+// checkbox/radio ที่วางในบรรทัดเดียวกับข้อความ (เดิมเป็น <input> ในป้าย <label>)
+.iamx-check { vertical-align: middle; }
+.iamx-check .cds--form-item, .iamx-check .cds--checkbox-wrapper, .iamx-check .cds--radio-button-wrapper { flex: none; margin: 0; }
+.iamx-check .cds--checkbox-label, .iamx-check .cds--radio-button__label { padding-left: 1.25rem; min-block-size: 1rem; margin: 0; }
+label:has(> .iamx-check) { display: inline-flex; align-items: center; gap: .5rem; }
+.iamx-check { min-inline-size: 1.25rem; }
+.iamx-check .cds--radio-button__label { padding-left: 0; }
+.iamx-check .cds--radio-button__appearance { margin: 0; }
